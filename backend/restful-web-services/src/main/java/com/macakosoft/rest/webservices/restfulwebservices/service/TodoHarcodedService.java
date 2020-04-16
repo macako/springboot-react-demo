@@ -38,4 +38,16 @@ public class TodoHarcodedService {
   public Todo findById(long id) {
     return todos.stream().filter(todo -> todo.getId() == id).findFirst().orElse(null);
   }
+
+  public Todo save(Todo todo) {
+    if (todo.getId() == -1 || todo.getId() == 0) {
+      todo.setId(++idCounter);
+    } else {
+      deleteById(todo.getId());
+    }
+
+    todos.add(todo);
+
+    return todo;
+  }
 }
