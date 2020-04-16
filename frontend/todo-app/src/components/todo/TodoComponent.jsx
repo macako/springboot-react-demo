@@ -22,7 +22,9 @@ class TodoComponent extends Component {
   componentDidMount() {
     let { id } = this.state;
 
-    if (id === -1) {
+    console.log(this.state);
+
+    if (id == -1) {
       return;
     }
 
@@ -52,7 +54,7 @@ class TodoComponent extends Component {
     let todo = { id, description, targetDate };
     let request = null;
 
-    if (id === -1) {
+    if (id == -1) {
       request = TodoDataService.createTodo(username, todo);
     } else {
       request = TodoDataService.updateTodo(username, id, todo);
