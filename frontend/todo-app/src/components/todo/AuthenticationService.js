@@ -1,14 +1,46 @@
+import axios from 'axios';
+import { API_URL } from '../../Constants';
+
+export const USER_NAME_SESSION_ATTRIBUTE_NAME = 'authenticationUser';
+
 class AuthenticationService {
+  executeJwtAuthenticationService(username, password) {
+    return axios.post(`${API_URL}/authenticate`, {
+      username,
+      password
+    });
+  }
+
+  executeBasicAuthenticationService(username, password) {
+    return axios.get(`${API_URL}/basicauth`, {
+      headers: { authorization: this.createBasicToken(username, password) }
+    });
+  }
+
+  createBasicToken(username, password) {
+    return 'Basic ' + window.btoa(username + ':' + password);
+  }
+
+  createJwtToken(token) {
+    return 'Bearer ' + token;
+  }
+
   registerSuccessfullLogin(username, password) {
-    sessionStorage.setItem('authenticationUser', username);
+    sessionStorage.setItem(USER_NAME_SESSION_ATTRIBUTE_NAME, username);
+    this.setupAxiosInterceptors(this.createBasicToken(username, password));
+  }
+
+  registerSuccessfullLoginForJwt(username, token) {
+    sessionStorage.setItem(USER_NAME_SESSION_ATTRIBUTE_NAME, username);
+    this.setupAxiosInterceptors(this.createJwtToken(token));
   }
 
   logout() {
-    sessionStorage.removeItem('authenticationUser');
+    sessionStorage.removeItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
   }
 
   isUserLogged() {
-    let user = sessionStorage.getItem('authenticationUser');
+    let user = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
 
     if (user === null) {
       return false;
@@ -18,13 +50,23 @@ class AuthenticationService {
   }
 
   getLoggedInUserName() {
-    let user = sessionStorage.getItem('authenticationUser');
+    let user = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
 
     if (user === null) {
       return '';
     }
 
     return user;
+  }
+
+  setupAxiosInterceptors(token) {
+    axios.interceptors.request.use(config => {
+      if (this.isUserLogged()) {
+        config.headers.authorization = token;
+      }
+
+      return config;
+    });
   }
 }
 

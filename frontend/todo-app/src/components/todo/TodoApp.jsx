@@ -4,7 +4,8 @@ import AuthenticatedRoute from './AuthenticatedRoute';
 import WelcomeComponent from './WelcomeComponent';
 import LoginComponent from './LoginComponent';
 import ErrorComponent from './ErrorComponent';
-import TodosComponent from './TodosComponent';
+import TodosListComponent from './TodosListComponent';
+import TodoComponent from './TodoComponent';
 import HeaderComponent from './HeaderComponent';
 import FooterComponent from './FooterComponent';
 import LogoutComponent from './LogoutComponent';
@@ -23,7 +24,11 @@ class TodoApp extends Component {
                 path='/welcome/:name'
                 component={WelcomeComponent}
               />
-              <AuthenticatedRoute path='/todos' component={TodosComponent} />
+              <AuthenticatedRoute path='/todos/:id' component={TodoComponent} />
+              <AuthenticatedRoute
+                path='/todos'
+                component={TodosListComponent}
+              />
               <AuthenticatedRoute path='/logout' component={LogoutComponent} />
               <Route component={ErrorComponent} />
             </Switch>

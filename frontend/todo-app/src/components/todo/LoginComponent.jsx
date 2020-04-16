@@ -21,16 +21,26 @@ class LoginComponent extends Component {
   }
 
   loginClicked(event) {
-    if (this.state.username === 'macako' && this.state.password === 'dummy') {
-      AuthenticationService.registerSuccessfullLogin(
-        this.state.username,
-        this.state.password
+    let { username, password } = this.state;
+
+    /*  AuthenticationService.executeBasicAuthenticationService(username, password)
+      .then(() => {
+        AuthenticationService.registerSuccessfullLogin(username, password);
+        this.props.history.push(`/welcome/${username}`);
+      })
+      .catch(() =>
+        this.setState({ hasLoginFailed: true, hasLoginSuccess: false })
+      );*/
+
+    AuthenticationService.executeJwtAuthenticationService(username, password)
+      .then(response => {
+        let { token } = response.data;
+        AuthenticationService.registerSuccessfullLoginForJwt(username, token);
+        this.props.history.push(`/welcome/${username}`);
+      })
+      .catch(() =>
+        this.setState({ hasLoginFailed: true, hasLoginSuccess: false })
       );
-      this.props.history.push(`/welcome/${this.state.username}`);
-      //  this.setState({ hasLoginFailed: false, hasLoginSuccess: true });
-    } else {
-      this.setState({ hasLoginFailed: true, hasLoginSuccess: false });
-    }
   }
 
   render() {
