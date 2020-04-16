@@ -1,0 +1,1 @@
+insert into todo(id,username,description,target_date, is_done) values (1001, 'macako', 'learn react js', sysdate(), false);
